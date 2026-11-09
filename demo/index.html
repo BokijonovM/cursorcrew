@@ -40,6 +40,9 @@ code,pre{font-family:var(--mono)}
 .lede{font-size:clamp(17px,2vw,19px);color:var(--muted);max-width:60ch}
 .install{--ctl:44px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 .install .cmd,.install .btn{box-sizing:border-box;height:var(--ctl);padding-block:0}
+.install .cmd{max-width:100%;overflow-x:auto;white-space:nowrap}
+/* keep long unbreakable content from stretching the grid past the card */
+.board,.top,.hero{grid-template-columns:minmax(0,1fr)}
 .cmd{display:flex;align-items:center;font:500 14px/1 var(--mono);background:var(--code);border:1px solid var(--line);border-radius:8px;padding:13px 16px}
 .btn{font:600 15px/1 var(--body);background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:13px 18px;cursor:pointer}
 
@@ -123,11 +126,11 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;color:
 <main class="board" id="stage">
   <div class="top" id="top" data-assemble-pending>
   <header class="hero">
-    <span class="eyebrow">npm · cursorcrew</span>
+    <span class="eyebrow">npm · @bokijonovm/cursorcrew</span>
     <h1>Your page, built live by a crew of <em>agents</em>.</h1>
     <p class="lede">Point it at any element. It blanks the content, then multiplayer cursors draw every box, type every line and drop in every image until the real page is back. One tiny built-in timeline underneath, zero dependencies.</p>
     <div class="install">
-      <code class="cmd">npm i cursorcrew</code>
+      <code class="cmd">npm i @bokijonovm/cursorcrew</code>
       <button class="btn" type="button" id="heroReplay">Watch it again</button>
     </div>
   </header>
@@ -164,7 +167,7 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;color:
   <section class="section" data-assemble-pending>
     <h2>Two lines to use it</h2>
     <div class="split">
-      <div class="code"><pre>import { assemble } from 'cursorcrew';
+      <div class="code"><pre>import { assemble } from '@bokijonovm/cursorcrew';
 
 const crew = assemble('#app', {
   agents: 5,
@@ -173,7 +176,7 @@ const crew = assemble('#app', {
 });
 
 crew.timeline; // play, pause, progress, timeScale</pre></div>
-      <div class="code"><pre>import { Assemble } from 'cursorcrew/react';
+      <div class="code"><pre>import { Assemble } from '@bokijonovm/cursorcrew/react';
 
 export default function Hero() {
   return (

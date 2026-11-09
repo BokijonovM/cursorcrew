@@ -1,5 +1,5 @@
 {
-  "name": "cursorcrew",
+  "name": "@bokijonovm/cursorcrew",
   "version": "0.1.0",
   "description": "Your page, built live by a crew of multiplayer cursors. Zero dependencies.",
   "keywords": [
@@ -53,6 +53,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
     "build": "npm run clean && tsup",

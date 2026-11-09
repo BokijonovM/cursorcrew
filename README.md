@@ -5,13 +5,13 @@ Your page, built live by a crew of multiplayer cursors.
 Point it at any element. It blanks the content, then a crew of named cursors draws every box, types every line and drops in every image until the real page is back. Zero dependencies, about 8 KB gzipped.
 
 ```bash
-npm i cursorcrew
+npm i @bokijonovm/cursorcrew
 ```
 
 ## Usage
 
 ```js
-import { assemble } from 'cursorcrew';
+import { assemble } from '@bokijonovm/cursorcrew';
 
 const crew = assemble('#app', {
   agents: 5,
@@ -32,7 +32,7 @@ To avoid a flash of the finished page before the script runs, mark the target as
 ### React
 
 ```jsx
-import { Assemble } from 'cursorcrew/react';
+import { Assemble } from '@bokijonovm/cursorcrew/react';
 
 export default function Hero() {
   return (
@@ -48,7 +48,7 @@ There is also a hook, `useAssemble(ref, options)`, which returns a ref holding t
 ### CDN
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/cursorcrew@0.1.0/dist/cursorcrew.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bokijonovm/cursorcrew@0.1.0/dist/cursorcrew.global.js"></script>
 <script>
   CursorCrew.assemble('#app');
 </script>
