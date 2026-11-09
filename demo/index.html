@@ -38,8 +38,9 @@ code,pre{font-family:var(--mono)}
 .hero h1{font-size:clamp(36px,6.5vw,64px);font-weight:700;letter-spacing:-.02em}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .lede{font-size:clamp(17px,2vw,19px);color:var(--muted);max-width:60ch}
-.install{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-.cmd{font:500 14px/1 var(--mono);background:var(--code);border:1px solid var(--line);border-radius:8px;padding:13px 16px}
+.install{--ctl:44px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.install .cmd,.install .btn{box-sizing:border-box;height:var(--ctl);padding-block:0}
+.cmd{display:flex;align-items:center;font:500 14px/1 var(--mono);background:var(--code);border:1px solid var(--line);border-radius:8px;padding:13px 16px}
 .btn{font:600 15px/1 var(--body);background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:13px 18px;cursor:pointer}
 
 .shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;grid-template-columns:200px 1fr;min-height:260px}
@@ -79,15 +80,43 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;color:
 .dock{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
   display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;background:var(--board);border:1px solid var(--line);
   border-radius:12px;padding:8px 10px;box-shadow:0 8px 28px rgba(20,22,40,.14);z-index:2147483600;max-width:calc(100vw - 32px)}
-.dock label{display:flex;align-items:center;gap:6px;font:500 12px/1 var(--mono);color:var(--muted)}
-.dock select{font:500 13px/1 var(--body);background:var(--code);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px}
-.dock .btn{padding:9px 14px;font-size:14px}
+.dock{--ctl:36px}
+.dock .field{display:flex;align-items:center;gap:6px;font:500 12px/1 var(--mono);color:var(--muted)}
+.dock select{height:var(--ctl);font:500 13px/1 var(--body);background:var(--code);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:0 8px}
+.dock .btn{height:var(--ctl);padding:0 14px;font-size:14px}
+
+/* dropdown — the native popup can't be styled, so the select is kept as hidden state behind this */
+.dd{position:relative}
+.dd-trigger{display:flex;align-items:center;gap:8px;height:var(--ctl);padding:0 10px 0 12px;font:500 13px/1 var(--body);
+  background:var(--code);color:var(--ink);border:1px solid var(--line);border-radius:8px;cursor:pointer;
+  transition:border-color .15s ease,background-color .15s ease}
+.dd-trigger:hover{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.dd[data-open] .dd-trigger{border-color:var(--accent)}
+.dd-value{display:grid;text-align:left;white-space:nowrap}
+.dd-value span{grid-area:1/1;visibility:hidden}
+.dd-value span[data-current]{visibility:visible}
+.dd-chevron{width:12px;height:12px;flex:none;color:var(--muted);transition:transform .18s ease}
+.dd[data-open] .dd-chevron{transform:rotate(180deg)}
+.dd-menu{position:absolute;left:0;bottom:calc(100% + 8px);z-index:1;min-width:100%;width:max-content;box-sizing:border-box;padding:4px;
+  display:grid;gap:2px;background:var(--board);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 32px rgba(20,22,40,.22);
+  visibility:hidden;opacity:0;transform:translateY(4px) scale(.98);transform-origin:bottom left;
+  transition:opacity .13s ease,transform .13s ease,visibility .13s}
+/* visibility must switch instantly on open: a still-hidden menu can't take focus */
+.dd[data-open] .dd-menu{visibility:visible;opacity:1;transform:none;transition:opacity .13s ease,transform .13s ease,visibility 0s}
+.dd-menu:focus{outline:none}
+.dd-option{display:flex;align-items:center;justify-content:space-between;gap:14px;height:32px;padding:0 8px 0 10px;border-radius:6px;
+  font:500 13px/1 var(--body);color:var(--ink);white-space:nowrap;cursor:pointer}
+.dd-option[data-active]{background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.dd-option[aria-selected="true"]{color:var(--accent);font-weight:600}
+.dd-check{width:14px;height:14px;flex:none;visibility:hidden}
+.dd-option[aria-selected="true"] .dd-check{visibility:visible}
+@media (prefers-reduced-motion:reduce){.dd-trigger,.dd-chevron,.dd-menu{transition:none}}
 .bar{width:90px;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media (max-width:640px){.shot{grid-template-columns:1fr}.shot-side{display:none}.shot-main{padding:14px}
   .stat{padding:10px}.stat b{font-size:17px}.stat small{font-size:12px}
-  .dock{flex-wrap:nowrap;gap:8px;padding:6px 8px}.dock .lbl{display:none}.bar{display:none}}
+  .dock{--ctl:40px;flex-wrap:nowrap;gap:8px;padding:6px 8px}.dock .lbl{display:none}.bar{display:none}}
 </style>
 </head>
 <body>
@@ -174,8 +203,8 @@ export default function Hero() {
 </main>
 
 <div class="dock" role="toolbar" aria-label="Demo controls">
-  <label for="agentsSel"><span class="lbl">Agents</span> <select id="agentsSel"><option value="3">3 agents</option><option value="5" selected>5 agents</option><option value="8">8 agents</option><option value="12">12 agents</option></select></label>
-  <label for="durSel"><span class="lbl">Length</span> <select id="durSel"><option value="6">6 s</option><option value="10" selected>10 s</option><option value="16">16 s</option><option value="0">natural</option></select></label>
+  <div class="field"><span class="lbl" id="agentsLbl">Agents</span> <select id="agentsSel" aria-labelledby="agentsLbl"><option value="3">3 agents</option><option value="5" selected>5 agents</option><option value="8">8 agents</option><option value="12">12 agents</option></select></div>
+  <div class="field"><span class="lbl" id="durLbl">Length</span> <select id="durSel" aria-labelledby="durLbl"><option value="6">6 s</option><option value="10" selected>10 s</option><option value="16">16 s</option><option value="0">natural</option></select></div>
   <div class="bar" aria-hidden="true"><i id="bar"></i></div>
   <button class="btn" type="button" id="replay">Replay</button>
 </div>
@@ -209,6 +238,127 @@ export default function Hero() {
   document.getElementById('agentsSel').addEventListener('change', run);
   document.getElementById('durSel').addEventListener('change', run);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+})();
+</script>
+<script>
+/* Styled dropdowns. Each native select stays in the DOM as the source of truth, so the demo code above is unchanged. */
+(function(){
+  var CHEVRON = '<svg class="dd-chevron" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 7.5 6 4l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var CHECK = '<svg class="dd-check" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="m3 7.5 2.7 2.7L11 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var current = null; // the dropdown that is open
+
+  function enhance(select){
+    var labelId = select.getAttribute('aria-labelledby');
+    var root = document.createElement('div');
+    root.className = 'dd';
+
+    var trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'dd-trigger';
+    trigger.id = select.id + 'Trigger';
+    trigger.setAttribute('aria-haspopup', 'listbox');
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.setAttribute('aria-labelledby', labelId + ' ' + trigger.id);
+
+    // Every label is stacked in one grid cell, so the trigger is as wide as the longest and never jumps.
+    var value = document.createElement('span');
+    value.className = 'dd-value';
+    trigger.appendChild(value);
+    trigger.insertAdjacentHTML('beforeend', CHEVRON);
+
+    var menu = document.createElement('div');
+    menu.className = 'dd-menu';
+    menu.setAttribute('role', 'listbox');
+    menu.setAttribute('aria-labelledby', labelId);
+    menu.tabIndex = -1;
+
+    var options = Array.prototype.map.call(select.options, function(option, i){
+      var label = document.createElement('span');
+      label.textContent = option.textContent;
+      value.appendChild(label);
+
+      var el = document.createElement('div');
+      el.className = 'dd-option';
+      el.id = select.id + 'Opt' + i;
+      el.setAttribute('role', 'option');
+      var text = document.createElement('span');
+      text.textContent = option.textContent;
+      el.appendChild(text);
+      el.insertAdjacentHTML('beforeend', CHECK);
+      el.addEventListener('mousemove', function(){ setActive(i); });
+      el.addEventListener('mousedown', function(e){ e.preventDefault(); }); // keep focus in the menu
+      el.addEventListener('click', function(){ choose(i); });
+      menu.appendChild(el);
+      return { el: el, label: label };
+    });
+
+    var active = select.selectedIndex;
+
+    function setActive(i){
+      active = i;
+      options.forEach(function(o, n){ o.el.toggleAttribute('data-active', n === i); });
+      menu.setAttribute('aria-activedescendant', options[i].el.id);
+    }
+    function sync(){
+      options.forEach(function(o, n){
+        var on = n === select.selectedIndex;
+        o.el.setAttribute('aria-selected', String(on));
+        o.label.toggleAttribute('data-current', on);
+      });
+    }
+    function open(){
+      if (current) current.close();
+      current = api;
+      root.setAttribute('data-open', '');
+      trigger.setAttribute('aria-expanded', 'true');
+      setActive(select.selectedIndex);
+      menu.focus();
+    }
+    function close(refocus){
+      if (current !== api) return;
+      current = null;
+      root.removeAttribute('data-open');
+      trigger.setAttribute('aria-expanded', 'false');
+      if (refocus) trigger.focus();
+    }
+    function choose(i){
+      close(true);
+      if (i === select.selectedIndex) return;
+      select.selectedIndex = i;
+      sync();
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    var api = { root: root, close: close };
+
+    // While open, focus must stay in the menu, or its blur would close it and this click would reopen it.
+    trigger.addEventListener('mousedown', function(e){ if (current === api) e.preventDefault(); });
+    trigger.addEventListener('click', function(){ if (current === api) close(true); else open(); });
+    trigger.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); open(); }
+    });
+    menu.addEventListener('keydown', function(e){
+      var last = options.length - 1;
+      if (e.key === 'ArrowDown'){ e.preventDefault(); setActive(Math.min(last, active + 1)); }
+      else if (e.key === 'ArrowUp'){ e.preventDefault(); setActive(Math.max(0, active - 1)); }
+      else if (e.key === 'Home'){ e.preventDefault(); setActive(0); }
+      else if (e.key === 'End'){ e.preventDefault(); setActive(last); }
+      else if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); choose(active); }
+      else if (e.key === 'Escape'){ e.preventDefault(); close(true); }
+      else if (e.key === 'Tab'){ close(false); }
+    });
+    menu.addEventListener('blur', function(){ close(false); });
+
+    sync();
+    root.appendChild(trigger);
+    root.appendChild(menu);
+    select.hidden = true;
+    select.parentNode.insertBefore(root, select);
+  }
+
+  document.addEventListener('pointerdown', function(e){
+    if (current && !current.root.contains(e.target)) current.close(false);
+  });
+  document.querySelectorAll('.dock select').forEach(enhance);
 })();
 </script>
 
