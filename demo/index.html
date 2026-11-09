@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>cursorcrew demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a design-tool artboard — dotted canvas, one centered board, a floating control dock outside the board */
+:root{
+  --canvas:#eef0f6; --board:#ffffff; --ink:#161a2b; --muted:#5d6380; --line:#dfe2ee;
+  --accent:#5b4df0; --accent-ink:#ffffff; --code:#f4f5fa; --dot:#cdd1e1;
+  --display:"Familjen Grotesk",ui-sans-serif,system-ui,sans-serif;
+  --body:"Figtree",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --canvas:#0f111a; --board:#171a26; --ink:#eceefa; --muted:#9aa0bd; --line:#2a2e42;
+  --accent:#8b80ff; --accent-ink:#11121c; --code:#11131d; --dot:#262a3b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --canvas:#0f111a; --board:#171a26; --ink:#eceefa; --muted:#9aa0bd; --line:#2a2e42;
+  --accent:#8b80ff; --accent-ink:#11121c; --code:#11131d; --dot:#262a3b; color-scheme:dark}
+
+body{background:var(--canvas);background-image:radial-gradient(var(--dot) 1px,transparent 1px);background-size:18px 18px;
+  color:var(--ink);font:400 16px/1.6 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 110px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+p{margin:0}
+code,pre{font-family:var(--mono)}
+
+.board{max-width:980px;margin:0 auto;background:var(--board);border:1px solid var(--line);border-radius:14px;
+  padding:clamp(20px,5vw,56px);display:grid;gap:56px}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.top{display:grid;gap:48px}
+.hero{display:grid;gap:20px;max-width:720px}
+[data-assemble-pending]{visibility:hidden}
+.hero h1{font-size:clamp(36px,6.5vw,64px);font-weight:700;letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:clamp(17px,2vw,19px);color:var(--muted);max-width:60ch}
+.install{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.cmd{font:500 14px/1 var(--mono);background:var(--code);border:1px solid var(--line);border-radius:8px;padding:13px 16px}
+.btn{font:600 15px/1 var(--body);background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:13px 18px;cursor:pointer}
+
+.shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;grid-template-columns:200px 1fr;min-height:260px}
+.shot-side{background:var(--code);border-right:1px solid var(--line);padding:18px;display:grid;align-content:start;gap:10px}
+.shot-side span{display:block;height:10px;border-radius:5px;background:var(--line)}
+.shot-main{padding:22px;display:grid;gap:16px;align-content:start}
+.shot-main svg{width:100%;height:auto;display:block}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.stat b{display:block;font:600 22px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.stat small{color:var(--muted);font-size:13px}
+
+.section{display:grid;gap:24px}
+.section h2{font-size:clamp(26px,3.5vw,34px);letter-spacing:-.01em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.card{border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:8px;align-content:start}
+.card h3{font-size:19px}
+.card p{color:var(--muted);font-size:15px}
+.chip{justify-self:start;font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
+  border:1px solid currentColor;border-radius:999px;padding:5px 8px}
+
+.code{background:var(--code);border:1px solid var(--line);border-radius:12px;padding:20px;overflow-x:auto;min-width:0}
+.code pre{margin:0;font-size:14px;line-height:1.7}
+.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:16px}
+
+table{width:100%;border-collapse:collapse;font-size:15px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+td code{font-size:13px;color:var(--accent)}
+
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;color:var(--muted);font-size:14px;
+  border-top:1px solid var(--line);padding-top:24px}
+
+/* control dock — lives outside the board so it never gets rebuilt */
+.dock{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;background:var(--board);border:1px solid var(--line);
+  border-radius:12px;padding:8px 10px;box-shadow:0 8px 28px rgba(20,22,40,.14);z-index:2147483600;max-width:calc(100vw - 32px)}
+.dock label{display:flex;align-items:center;gap:6px;font:500 12px/1 var(--mono);color:var(--muted)}
+.dock select{font:500 13px/1 var(--body);background:var(--code);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px}
+.dock .btn{padding:9px 14px;font-size:14px}
+.bar{width:90px;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:640px){.shot{grid-template-columns:1fr}.shot-side{display:none}.shot-main{padding:14px}
+  .stat{padding:10px}.stat b{font-size:17px}.stat small{font-size:12px}
+  .dock{flex-wrap:nowrap;gap:8px;padding:6px 8px}.dock .lbl{display:none}.bar{display:none}}
+</style>
+</head>
+<body>
+<main class="board" id="stage">
+  <div class="top" id="top" data-assemble-pending>
+  <header class="hero">
+    <span class="eyebrow">npm · cursorcrew</span>
+    <h1>Your page, built live by a crew of <em>agents</em>.</h1>
+    <p class="lede">Point it at any element. It blanks the content, then multiplayer cursors draw every box, type every line and drop in every image until the real page is back. One tiny built-in timeline underneath, zero dependencies.</p>
+    <div class="install">
+      <code class="cmd">npm i cursorcrew</code>
+      <button class="btn" type="button" id="heroReplay">Watch it again</button>
+    </div>
+  </header>
+
+  <div class="shot" aria-label="Example dashboard">
+    <aside class="shot-side"><span style="width:70%"></span><span></span><span style="width:85%"></span><span style="width:60%"></span><span style="width:75%"></span></aside>
+    <div class="shot-main">
+      <div class="stats">
+        <div class="stat"><b>1,284</b><small>Applicants</small></div>
+        <div class="stat"><b>37.2%</b><small>Reply rate</small></div>
+        <div class="stat"><b>4.1 d</b><small>Time to hire</small></div>
+      </div>
+      <svg viewBox="0 0 600 150" role="img" aria-label="Applications per week, rising">
+        <defs><linearGradient id="fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".28"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+        <g stroke="var(--line)" stroke-width="1"><line x1="0" y1="30" x2="600" y2="30"/><line x1="0" y1="75" x2="600" y2="75"/><line x1="0" y1="120" x2="600" y2="120"/></g>
+        <path d="M0 118 L60 110 L120 112 L180 96 L240 98 L300 80 L360 74 L420 60 L480 52 L540 38 L600 30 L600 150 L0 150Z" fill="url(#fill)"/>
+        <path d="M0 118 L60 110 L120 112 L180 96 L240 98 L300 80 L360 74 L420 60 L480 52 L540 38 L600 30" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+        <circle cx="600" cy="30" r="4" fill="var(--accent)"/>
+      </svg>
+    </div>
+  </div>
+  </div>
+
+  <section class="section" data-assemble-pending>
+    <h2>What the agents do</h2>
+    <div class="grid">
+      <article class="card"><span class="chip">box</span><h3>Draw every surface</h3><p>Anything with a fill, border or shadow is dragged out with a crosshair and a live W × H badge, then fades in.</p></article>
+      <article class="card"><span class="chip">text</span><h3>Type every line</h3><p>Headings and paragraphs get a text frame and a caret. Short text types by letter, long text by word.</p></article>
+      <article class="card"><span class="chip">media</span><h3>Place images and charts</h3><p>Images, SVG, video and canvas get a striped placeholder, then sweep in from the top.</p></article>
+      <article class="card"><span class="chip">order</span><h3>Respect the tree</h3><p>Children wait for their parent box. Free agents pick the nearest ready task, so work spreads across the page.</p></article>
+    </div>
+  </section>
+
+  <section class="section" data-assemble-pending>
+    <h2>Two lines to use it</h2>
+    <div class="split">
+      <div class="code"><pre>import { assemble } from 'cursorcrew';
+
+const crew = assemble('#app', {
+  agents: 5,
+  duration: 8,
+  trigger: 'viewport',
+});
+
+crew.timeline; // play, pause, progress, timeScale</pre></div>
+      <div class="code"><pre>import { Assemble } from 'cursorcrew/react';
+
+export default function Hero() {
+  return (
+    &lt;Assemble options={{ agents: 4 }}&gt;
+      &lt;h1&gt;Hello world&lt;/h1&gt;
+    &lt;/Assemble&gt;
+  );
+}</pre></div>
+    </div>
+  </section>
+
+  <section class="section" data-assemble-pending>
+    <h2>Options</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Option</th><th>Default</th><th>What it changes</th></tr></thead>
+      <tbody>
+        <tr><td><code>agents</code></td><td>5</td><td>Count, or a list of names and colors</td></tr>
+        <tr><td><code>duration</code></td><td>auto</td><td>Fit the whole build into N seconds</td></tr>
+        <tr><td><code>trigger</code></td><td>immediate</td><td>Use viewport to start on scroll</td></tr>
+        <tr><td><code>typing</code></td><td>auto</td><td>char, word or auto</td></tr>
+        <tr><td><code>data-assemble</code></td><td>attribute</td><td>skip excludes an element, block reveals it as one piece</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <footer data-assemble-pending><span>MIT · zero dependencies</span><span>Respects prefers-reduced-motion</span></footer>
+</main>
+
+<div class="dock" role="toolbar" aria-label="Demo controls">
+  <label for="agentsSel"><span class="lbl">Agents</span> <select id="agentsSel"><option value="3">3 agents</option><option value="5" selected>5 agents</option><option value="8">8 agents</option><option value="12">12 agents</option></select></label>
+  <label for="durSel"><span class="lbl">Length</span> <select id="durSel"><option value="6">6 s</option><option value="10" selected>10 s</option><option value="16">16 s</option><option value="0">natural</option></select></label>
+  <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+  <button class="btn" type="button" id="replay">Replay</button>
+</div>
+
+<script src="../dist/cursorcrew.global.js"></script>
+<script>
+(function(){
+  var crews = [], bar = document.getElementById('bar');
+  function run(){
+    crews.forEach(function(c){ c.destroy(); });
+    window.scrollTo(0, 0);
+    var n = +document.getElementById('agentsSel').value;
+    var d = +document.getElementById('durSel').value;
+    // the top of the page builds right away
+    crews = [CursorCrew.assemble('#top', {
+      agents: n,
+      duration: d || undefined,
+      reducedMotion: 'ignore',
+      onProgress: function(p){ bar.style.width = (p*100).toFixed(1) + '%'; },
+      onComplete: function(){ bar.style.width = '100%'; }
+    })];
+    // every later section waits until it scrolls into view
+    document.querySelectorAll('#stage > section, #stage > footer').forEach(function(el){
+      crews.push(CursorCrew.assemble(el, { agents: Math.min(n, 6), duration: d ? Math.max(3, d * 0.45) : undefined, trigger: 'viewport', reducedMotion: 'ignore' }));
+    });
+    window.crews = crews; window.crew = crews[0];
+  }
+  window.run = run;
+  document.getElementById('replay').addEventListener('click', run);
+  document.getElementById('heroReplay').addEventListener('click', run);
+  document.getElementById('agentsSel').addEventListener('change', run);
+  document.getElementById('durSel').addEventListener('change', run);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+})();
+</script>
+
+</body></html>
