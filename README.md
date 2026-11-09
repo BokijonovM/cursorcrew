@@ -1,5 +1,7 @@
 # cursorcrew
 
+![cursorcrew demo](https://raw.githubusercontent.com/BokijonovM/cursorcrew/main/cursorcrew.gif)
+
 Your page, built live by a crew of multiplayer cursors.
 
 Point it at any element. It blanks the content, then a crew of named cursors draws every box, types every line and drops in every image until the real page is back. Zero dependencies, about 8 KB gzipped.

@@ -88,6 +88,17 @@ describe('assemble', () => {
     crew.destroy();
   });
 
+  it('keeps text in a flex container as a single item while typing', async () => {
+    document.body.innerHTML = `<main id="app"><div class="flexy" style="display: flex">Go now</div></main>`;
+    const crew = assemble('#app', { autoplay: false });
+    expect($('.flexy').children).toHaveLength(1);
+    expect($('.flexy').children[0].textContent).toBe('Go now');
+    expect($('.flexy').querySelectorAll('[data-cc-chunk]')).toHaveLength('Gonow'.length);
+    crew.finish();
+    await crew.finished;
+    expect($('.flexy').innerHTML).toBe('Go now');
+  });
+
   it('treats only zero-alpha colors as transparent', async () => {
     document.body.innerHTML = `<main id="app">
       <div class="black" style="border: 1px solid black"><p>a</p></div>

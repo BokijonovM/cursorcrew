@@ -55,6 +55,14 @@ export function splitText(el: Element, mode: TypingMode): TextSplit {
       fragment.appendChild(out);
       created.push(out);
     }
+    // In a flex or grid container every child is its own item, which would drop the
+    // spaces and shift the layout. One wrapper keeps the text a single item, as it was.
+    if (/flex|grid/.test(getComputedStyle(node.parentElement!).display)) {
+      const item = document.createElement('span');
+      item.appendChild(fragment);
+      fragment.appendChild(item);
+      created.splice(0, created.length, item);
+    }
     node.parentNode!.insertBefore(fragment, node);
     node.parentNode!.removeChild(node);
     replaced.push({ original: node, created });
