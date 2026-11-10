@@ -127,4 +127,4 @@ git push --follow-tags
 
 ## License
 
-MIT © Muhsinjon Bokijonov
+MIT © [Muhsinjon Bokijonov](https://www.bokijonov.com/)
