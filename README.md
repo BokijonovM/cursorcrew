@@ -10,6 +10,14 @@ Point it at any element. It blanks the content, then a crew of named cursors dra
 npm i @bokijonovm/cursorcrew
 ```
 
+```bash
+yarn add @bokijonovm/cursorcrew
+```
+
+```bash
+pnpm add @bokijonovm/cursorcrew
+```
+
 ## Usage
 
 ```js
